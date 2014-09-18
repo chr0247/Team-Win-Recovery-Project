@@ -993,9 +993,11 @@ bool TWPartition::Mount(bool Display_Error) {
 						LOGERR("Couldn't fix permissions for %s: %s\n", Mount_Point.c_str(), strerror(errno));
 					else
 						LOGINFO("Couldn't fix permissions for %s: %s\n", Mount_Point.c_str(), strerror(errno));
+					if (Current_File_System == "texfat") Current_File_System = "exfat";
 					return false;
 				}
 			}
+			if (Current_File_System == "texfat") Current_File_System = "exfat";
 			return true;
 		}
 	} else if (!exfat_mounted && mount(Actual_Block_Device.c_str(), Mount_Point.c_str(), Current_File_System.c_str(), Mount_Flags, Mount_Options.c_str()) != 0 && mount(Actual_Block_Device.c_str(), Mount_Point.c_str(), Current_File_System.c_str(), Mount_Flags, NULL) != 0) {
@@ -1008,6 +1010,7 @@ bool TWPartition::Mount(bool Display_Error) {
 				else
 					LOGINFO("Unable to mount '%s'\n", Mount_Point.c_str());
 				LOGINFO("Actual block device: '%s', current file system: '%s', flags: 0x%8x, options: '%s'\n", Actual_Block_Device.c_str(), Current_File_System.c_str(), Mount_Flags, Mount_Options.c_str());
+				if (Current_File_System == "texfat") Current_File_System = "exfat";
 				return false;
 			}
 		} else {
@@ -1017,6 +1020,7 @@ bool TWPartition::Mount(bool Display_Error) {
 			else
 				LOGINFO("Unable to mount '%s'\n", Mount_Point.c_str());
 			LOGINFO("Actual block device: '%s', current file system: '%s'\n", Actual_Block_Device.c_str(), Current_File_System.c_str());
+			if (Current_File_System == "texfat") Current_File_System = "exfat";
 			return false;
 #ifdef TW_NO_EXFAT_FUSE
 		}
@@ -1048,6 +1052,7 @@ bool TWPartition::Mount(bool Display_Error) {
 		string Command = "mount '" + Symlink_Path + "' '" + Symlink_Mount_Point + "'";
 		TWFunc::Exec_Cmd(Command);
 	}
+	if (Current_File_System == "texfat") Current_File_System = "exfat";
 	return true;
 }
 
